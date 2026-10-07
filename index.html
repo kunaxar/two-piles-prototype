@@ -1,0 +1,193 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#00b386"><title>Two Piles | Practice investing</title><style>
+:root{--bg:#fff;--ink:#20282d;--muted:#64717b;--soft:#f5f7f8;--line:#e5e9eb;--green:#007d60;--mint:#e8f8f2;--loss:#b84336;--lossbg:#fcece8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit}
+button,a,input{touch-action:manipulation}
+button{cursor:pointer;color:inherit}
+button:disabled{cursor:not-allowed;opacity:.4}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #578ed4;outline-offset:3px}
+.app{max-width:1040px;margin:auto;background:var(--bg);min-height:100dvh}
+.top{height:72px;padding:12px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:750;font-size:21px;letter-spacing:-.7px}
+.brand b{color:var(--green)}
+.tag{font-size:11px;border:1px solid var(--line);padding:4px 8px;border-radius:20px;color:var(--muted)}
+.icon{background:none;border:0;min-width:44px;min-height:44px;font-size:20px}
+.page{padding-bottom:155px!important;max-width:630px;margin:auto;padding:28px 24px 16px;min-height:560px;animation:slide .2s ease-out}
+.eyebrow{font-size:12px;font-weight:650;color:var(--green);margin-bottom:12px;text-transform:uppercase;letter-spacing:1.4px}
+h1{font-size:29px;line-height:1.2;letter-spacing:-.8px;margin:0 0 12px}
+h2{font-size:19px;line-height:1.35;margin:0}
+p{margin:8px 0 16px}
+.sub,.note{color:var(--muted)}
+.note{font-size:12px;line-height:1.6;margin-top:14px}
+.num{font-size:39px;line-height:1.2;font-weight:650;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+.smallnum{font-size:22px;font-weight:650;font-variant-numeric:tabular-nums}
+.numButton{background:none;border:0;padding:0;text-align:left;color:inherit}
+.moneylabel{color:var(--muted);font-size:12px;margin:20px 0 4px}
+.tile{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--bg)}
+.hero{background:var(--mint);border:0;padding:24px;border-radius:20px;margin-top:20px}
+.hero p{color:var(--muted)}
+.hero svg{width:100%;height:120px;margin-top:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0}
+.goal{min-height:113px;text-align:left;background:var(--soft);border:1px solid transparent;border-radius:14px;padding:16px}
+.goal .emoji{font-size:27px;display:block;margin-bottom:8px}
+.selected{border-color:var(--green)!important;background:var(--mint)!important}
+.goal strong{font-size:14px;font-weight:600}
+.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--bg);color:inherit;min-height:48px}
+.amountbox{margin:32px 0;display:flex;justify-content:center;align-items:center;gap:8px}
+.amountbox input{width:200px;text-align:center;border:0;font-size:42px;background:transparent;color:inherit;min-width:0}
+.round{border:1px solid var(--line);border-radius:50%;background:var(--bg);height:48px;width:48px;font-size:23px;flex-shrink:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
+.chip{border:1px solid var(--line);border-radius:9px;background:var(--bg);padding:11px 14px;min-height:44px;font-size:13px}
+.rates{display:grid;grid-template-columns:1fr 1fr}
+.rates .chip{text-align:left}
+.error{color:var(--loss);font-size:13px;min-height:20px}
+.pile{margin:26px 0 14px}
+.rail{height:96px;background:var(--soft);border-radius:12px;display:flex;overflow:hidden;position:relative;align-items:stretch}
+.solid{background:var(--green);min-width:0;transition:width .25s}
+.growth{background:var(--mint);border:2px solid var(--green);border-left:0;transition:width .25s}
+.notch{position:absolute;right:0;top:0;bottom:0;background:repeating-linear-gradient(135deg,var(--lossbg),var(--lossbg) 5px,var(--loss) 6px,var(--lossbg) 7px);border:2px solid var(--loss);border-left:0;transition:width .25s}
+.legend{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.legend div{flex:1}
+.legend small{display:block;color:var(--muted);font-size:12px}
+.legend strong{font-size:18px;font-weight:650}
+.lossText{color:var(--loss)}
+.dot{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:2px;margin-right:6px}
+.outline{background:transparent;border:1px solid var(--green)}
+.lossDot{background:var(--loss)}
+.scrub{margin:22px 0}
+.scrub label{display:flex;justify-content:space-between;margin-bottom:12px;font-size:14px}
+.scrub input{width:100%;accent-color:var(--green);height:44px}
+.ends{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}
+.callout{padding:12px 14px;border-radius:10px;background:var(--soft);font-size:13px;margin:16px 0}
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.timeline .rail{height:160px;flex-direction:column-reverse;border-radius:8px}
+.timeline .solid,.timeline .growth{width:100%!important}
+.timeline .growth{border:2px solid var(--green);border-bottom:0}
+.timeline .notch{bottom:auto;left:0;border:2px solid var(--loss)}
+.timeline h3{font-size:14px;margin:12px 0 4px}
+.timeline .legend{display:block}
+.timeline .legend div{margin-top:10px}
+.timeline .legend strong{font-size:14px}
+.timeline .smallnum{font-size:17px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+.compare .rail{height:90px}
+.compare .legend{display:block}
+.compare .legend div{margin-top:10px}
+.compare .legend strong{font-size:17px}
+.compare h3{font-size:14px;margin:0 0 12px}
+.fund{margin:12px 0;padding:16px;border:1px solid var(--line);border-radius:13px}
+.fund button{border:0;background:transparent;text-align:left;width:100%;padding:0;min-height:44px}
+.fund .type{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:7px}
+.fund h2{font-size:17px}
+.fund p{font-size:13px;color:var(--muted);margin:8px 0}
+.fund .risk{font-size:12px;padding-top:10px;border-top:1px solid var(--line)}
+a{color:var(--green)}
+.fund a{font-size:12px;display:inline-block;min-height:44px;padding-top:12px}
+.summary{margin:24px 0}
+.row{display:flex;justify-content:space-between;gap:20px;padding:15px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row span{color:var(--muted)}
+.row strong{text-align:right;max-width:65%;font-weight:600}
+.footer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:1040px;background:var(--bg);border-top:1px solid var(--line);padding:14px 24px;z-index:5}
+.footer .wrap{max-width:582px;margin:auto}
+.primary{width:100%;background:var(--green);color:white;border:0;border-radius:10px;min-height:52px;padding:12px;font-weight:650}
+.secondary{display:block;width:100%;border:0;background:none;color:var(--green);min-height:44px;margin-top:6px;font-weight:600}
+.progress{display:flex;gap:5px;align-items:center}
+.progress i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.progress i.on{background:var(--green)}
+.tabs{display:flex;border-bottom:1px solid var(--line);overflow:auto;margin:20px -24px 0;padding:0 24px;gap:16px}
+.tabs button{white-space:nowrap;border:0;background:none;font-size:13px;min-height:44px;color:var(--muted)}
+.tabs .active{border-bottom:2px solid var(--green);color:var(--green);font-weight:650}
+.nav{display:flex;justify-content:space-around;border-top:1px solid var(--line);padding:12px;gap:4px}
+.nav button{min-height:52px;border:0;background:none;font-size:11px;color:var(--muted);flex:1}
+.nav button span{display:block;font-size:19px;margin-bottom:4px}
+.nav button.active{color:var(--green);font-weight:600}
+.search{background:var(--soft);border-radius:10px;padding:13px 16px;color:var(--muted);font-size:14px;margin-top:20px}
+.success{width:70px;height:70px;border-radius:50%;background:var(--mint);color:var(--green);display:grid;place-items:center;font-size:32px;margin:28px 0}
+.modal{position:fixed;inset:0;background:#0007;display:flex;align-items:end;justify-content:center;z-index:20}
+.sheet{width:100%;max-width:630px;padding:26px;background:var(--bg);border-radius:24px 24px 0 0}
+.danger{color:var(--loss)}
+.dangerBtn{background:var(--loss)}
+.replay{margin-top:20px}
+.disableditem{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:14px}
+.disableditem button{width:100%;min-height:44px;border:0;background:none}
+.disableditem p{font-size:12px;color:var(--muted);margin:0;text-align:center}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lesson{margin-top:24px;padding:18px;background:var(--soft);border-radius:14px}
+.lesson h2{font-size:16px}
+.lesson p{font-size:13px;color:var(--muted);margin-bottom:0}
+.toggle{display:flex;gap:8px}
+.status{font-size:12px;color:var(--muted);padding:10px 0}
+.dark{--bg:#172126;--ink:#e9eff1;--muted:#a4b2b9;--soft:#202d33;--line:#334249;--green:#3bc49c;--mint:#183d34;--loss:#ff9881;--lossbg:#493028}
+.dark .primary{color:#102820}
+ @keyframes slide{from{opacity:.4;transform:translateX(10px)}
+to{opacity:1;transform:none}
+}
+@media(min-width:760px){.footer{bottom:0}
+.app{margin:32px auto;min-height:calc(100dvh - 64px);border:1px solid var(--line);border-radius:22px;overflow:clip}
+.page{padding-top:36px;min-height:600px}
+h1{font-size:34px}
+.rail{height:120px}
+.footer{border-radius:0 0 22px 22px}
+}
+@media(max-width:350px){.page{padding:24px 18px}
+.top{padding:12px 18px}
+.num{font-size:34px}
+.timeline{grid-template-columns:1fr}
+.timeline .rail{height:120px;flex-direction:column-reverse}
+.compare{grid-template-columns:1fr}
+.amountbox input{width:170px;font-size:36px}
+.legend strong{font-size:16px}
+.footer{padding:12px 18px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+
+</style></head><body><div id="root"></div><script>
+const GOALS=[['Trip','✈️',2],['Gadget','💻',2],['Bike or car','🛵',5],['Moving out','🏠',3],['Emergency cushion','🛟',1],['Something else','✨',5]];
+const FUNDS=[{type:'Flexi cap fund',name:'Parag Parikh Flexi Cap Fund',amc:'PPFAS Mutual Fund',description:'Equity across companies of different sizes.',risk:null,riskDate:'',url:'https://amc.ppfas.com/schemes/parag-parikh-flexi-cap-fund/',riskUrl:'https://amc.ppfas.com/downloads/parag-parikh-flexi-cap-fund/KIM_PPFCF.pdf?14082025='},{type:'Index fund',name:'UTI Nifty 50 Index Fund',amc:'UTI Mutual Fund',description:'Tracks the Nifty 50 index.',risk:null,url:'https://www.utimf.com/mutual-funds/uti-nifty-50-index-fund'},{type:'Liquid fund',name:'SBI Liquid Fund',amc:'SBI Mutual Fund',description:'Debt and money market instruments up to 91 days.',risk:null,url:'https://www.sbimf.com/sbimf-scheme-details/sbi-liquid-fund-19'}];
+const fresh=()=>({goal:'',custom:'',emoji:'',amount:'2000',years:5,moved:false,rate:.08,fund:null});let d=fresh(),step=0,saved=null,storageOK=true,dark=false,edit=false,yearOne=false,modal=false,fullNumber=false;
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){storageOK=false;return false}}
+function load(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){storageOK=false;return null}}
+saved=load('twopiles:v1');const draft=load('twopiles:draft:v1');if(saved&&validSaved(saved)){d={...fresh(),...saved};step=0}else{saved=null;if(draft&&draft.d){d={...fresh(),...draft.d};step=draft.step===1?1: draft.step>=2?2:0;}}
+function validSaved(s){return s&&typeof s.goal==='string'&&Number(s.amount)>=500&&Number(s.amount)<=50000}
+function persist(){if(!saved&&step>0&&step<9)store('twopiles:draft:v1',{d,step})}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function name(){return d.goal==='Something else'?d.custom.trim():d.goal}
+function money(n,compact=false){let a=Math.abs(n);return (n<0?'−':'')+'₹'+(compact&&a>=1e7?(a/1e7).toFixed(1)+' Cr':Math.round(a).toLocaleString('en-IN'))}
+function amount(){return Number(d.amount)||0}
+function calc(p,y,R){let n=y*12,r=Math.pow(1+R,1/12)-1,c=p*n,v=r===0?c:p*Math.expm1(n*Math.log1p(r))/r;return {c,v,g:v-c}}
+function dip(p,end=36,stop=false){let v=0,c=0;for(let i=0;i<end;i++){v*=Math.pow(1+(i<12?-.2:.1),1/12);if(!stop||i<12){v+=p;c+=p}}return {c,v,g:v-c}}
+function validAmount(){return /^\d+(\.\d+)?$/.test(d.amount)&&amount()>=500&&amount()<=50000}
+function goalOK(){return !!d.goal&&(d.goal!=='Something else'||(d.custom.trim().length>0&&Array.from(d.custom.trim()).length<=24))}
+function amountError(){return !d.amount?'Enter an amount':amount()<500?'Minimum is ₹500 for this practice.':amount()>50000?'Maximum is ₹50,000 for this practice.':!validAmount()?'Enter an amount in rupees.':''}
+function go(s){step=s;fullNumber=false;persist();render();window.scrollTo({top:0,behavior:'instant'})}
+function next(){if(step===2&&edit){edit=false;go(8)}else go(step+1)}
+function back(){if(edit&&step===2){edit=false;go(8)}else go(Math.max(0,step-1))}
+function pile(x,vertical=false,scale=null){let max=scale||Math.max(x.c,x.v,1),share=x.c/max*100,g=Math.max(x.g,0)/max*100,loss=Math.max(-x.g,0)/max*100;let dim=vertical?'height':'width';return `<div class="pile"><div class="rail" role="img" aria-label="You put in ${money(x.c)}; ${x.g<0?'loss':'growth'} ${money(Math.abs(x.g))}; total ${money(x.v)}"><div class="solid" style="${dim}:${share}%"></div>${x.g>0?`<div class="growth" style="${dim}:${g}%"></div>`:''}${x.g<0?`<div class="notch" style="${dim}:${loss}%"></div>`:''}</div><div class="legend"><div><small><i class="dot"></i>You put in</small><strong title="${money(x.c)}">${money(x.c,true)}</strong></div><div class="${x.g<0?'lossText':''}"><small><i class="dot ${x.g<0?'lossDot':'outline'}"></i>${x.g<0?'Loss':'Growth'}</small><strong title="${money(x.g)}">${x.g>0?'+':''}${money(x.g,true)}</strong></div></div></div>`}
+function disclaimer(){return `<p class="note">Hypothetical illustration. Not a forecast. Real returns can differ and can be negative.<br>End-of-month contributions. No inflation, fees, exit load or tax included.</p>`}
+function scrub(){return `<div class="scrub"><label for="years">Time <strong id="yeartext">${d.years} ${d.years===1?'year':'years'}</strong></label><input id="years" type="range" min="1" max="20" step="1" value="${d.years}" aria-label="Horizon in years" aria-valuetext="${d.years} years"><div class="ends"><span>1 year</span><span>20 years</span></div></div>`}
+function shortnote(){return d.years<=3&&d.rate>0?'<div class="callout">Shorter timelines leave less time to recover from a fall.</div>':''}
+function dots(){return step>=1&&step<=7?`<div class="progress" aria-label="Step ${step} of 7">${[1,2,3,4,5,6,7].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>`:'<span class="tag">Practice mode</span>'}
+function footer(label,disabled=false,secondary=''){return `<footer class="footer"><div class="wrap"><button class="primary" id="next" ${disabled?'disabled':''}>${label}</button>${secondary}</div></footer>`}
+function icon(){return `<svg viewBox="0 0 320 120" aria-label="Contributions and growth as separate piles" role="img"><rect x="0" y="25" width="208" height="88" rx="10" fill="var(--green)"/><rect x="218" y="1" width="100" height="112" rx="10" fill="var(--mint)" stroke="var(--green)" stroke-width="2"/><path d="M247 73l15-15 13 7 23-28" stroke="var(--green)" stroke-width="3" fill="none"/></svg>`}
+function home(){return `<div class="eyebrow">Your investing space</div><h1>Small steps.<br>Something to look forward to.</h1><div class="search" role="note">⌕ &nbsp; Explore goals, not just numbers</div><div class="tabs"><button disabled>Stocks</button><button disabled>F&amp;O</button><button disabled>Mutual Funds</button><button class="active" id="goalsTab">Goals</button></div>${saved?`<button id="savedTile" class="hero" style="width:100%;text-align:left"><span class="eyebrow">Your practice goal</span><h2 class="truncate">${esc(saved.emoji)} ${esc(saved.goal==='Something else'?saved.custom:saved.goal)}</h2><p>${money(Number(saved.amount))} / month · Practice</p><span style="color:var(--green)">View goal →</span></button>`:`<div class="hero"><span class="eyebrow">Meet Two Piles</span><h2>Pick something you want.<br>See what ₹ could do.</h2>${icon()}<p>Your money in. What happens to it.<br>Learn the difference by trying it.</p><button class="primary" id="start">Start</button></div>`}<div class="lesson"><h2>A rehearsal, not an investment.</h2><p>No KYC. No account linking. No real money moves.</p></div>`}
+function content(){let x=calc(amount(),d.years,d.rate);switch(step){case 0:return home();
+case 1:return `<div class="eyebrow">Question 1 of 2</div><h1>What are you saving for?</h1><p class="sub">Start with something that matters to you.</p><div class="grid">${GOALS.map((g,i)=>`<button class="goal ${d.goal===g[0]?'selected':''}" data-goal="${i}" aria-pressed="${d.goal===g[0]}"><span class="emoji">${g[1]}</span><strong>${g[0]}</strong></button>`).join('')}</div>${d.goal==='Something else'?`<label for="custom">Give it a short name</label><input class="input" id="custom" maxlength="48" value="${esc(d.custom)}" placeholder="Your next chapter"><div class="error" id="goalError">${d.custom&&!goalOK()?'Use 1-24 characters.':''}</div>`:''}`;
+case 2:return `<div class="eyebrow">${edit?'Edit practice amount':'Question 2 of 2'}</div><h1>How much can you set aside each month?</h1><div class="amountbox"><button class="round" id="minus" aria-label="Decrease by 500 rupees" ${amount()<=500?'disabled':''}>−</button><label class="num" for="amount">₹</label><input id="amount" aria-label="Monthly amount in rupees" inputmode="decimal" value="${esc(d.amount)}"><button class="round" id="plus" aria-label="Increase by 500 rupees" ${amount()>=50000?'disabled':''}>+</button></div><div class="error" id="amountError" role="alert">${amountError()}</div><div class="chips">${[500,1000,2000,5000].map(a=>`<button class="chip ${amount()===a?'selected':''}" data-amount="${a}">${money(a)}</button>`).join('')}</div><p class="sub">Think money you won't miss.</p>`;
+case 3:return `<div class="eyebrow">${esc(d.emoji)} ${esc(name())} · Your baseline</div><h1>This is just you saving.</h1><p class="moneylabel">You put in</p><div class="num" aria-live="polite">${money(amount()*d.years*12,true)}</div>${pile(calc(amount(),d.years,0))}<p class="sub">Same money in, no growth.<br>This is your baseline.</p>${scrub()}${disclaimer()}`;
+case 4:return `<div class="eyebrow">What happens to it</div><h1>Now let's change what happens to it.</h1><p class="moneylabel">Could be · Hypothetical total</p><button class="num numButton" id="fullNumber" title="Tap for full rupee value" aria-label="Hypothetical total ${money(x.v)}">${money(x.v,!fullNumber)}</button>${pile(x)}<div class="chips rates">${[[-.1,'Falls 10% a year'],[0,'Flat'],[.08,'Grows 8% a year'],[.12,'Grows 12% a year']].map(([r,l])=>`<button class="chip ${d.rate===r?'selected':''}" data-rate="${r}" aria-pressed="${d.rate===r}">${l}</button>`).join('')}</div>${scrub()}${shortnote()}${disclaimer()}`;
+case 5:{let xs=[5,10,15].map(y=>calc(amount(),y,d.rate));return `<div class="eyebrow">Time, made visible</div><h1>${d.rate>0?'Same '+money(amount())+' a month. Three timelines.':"Time doesn't rescue every scenario."}</h1><p class="sub">${d.rate>0?'One monthly amount. The same illustrative rate.':'With flat or falling returns, longer just means more months of putting money in.'}</p><div class="timeline">${xs.map((a,i)=>`<div><h3>${[5,10,15][i]} years</h3>${pile(a,true,Math.max(...xs.map(z=>Math.max(z.c,z.v))))}<div class="moneylabel">Hypothetical total</div><div class="smallnum">${money(a.v,true)}</div></div>`).join('')}</div>${d.rate>0?`<div class="callout">Growth is <strong>${Math.round(xs[2].g/xs[2].v*100)}%</strong> of the total at 15 years, versus <strong>${Math.round(xs[0].g/xs[0].v*100)}%</strong> at 5 years.</div>`:''}${disclaimer()}`};
+case 6:return `<div class="eyebrow">Make room for a dip</div><h1>A bad first year. Then what you do next matters.</h1><div class="callout">Made-up scenario for learning.<br>Year 1: −20% annualised. Years 2-3: +10% annualised.</div><div class="toggle"><button class="chip ${!yearOne?'selected':''}" id="year3">End of year 3</button><button class="chip ${yearOne?'selected':''}" id="year1">End of year 1</button></div><div class="compare">${[false,true].map(stop=>{let a=dip(amount(),yearOne?12:36,stop);return `<div><h3>${stop?'Stopped after year 1':'Kept going'}</h3>${pile(a,false,Math.max(dip(amount(),yearOne?12:36,false).c,dip(amount(),yearOne?12:36,false).v))}<div class="moneylabel">Hypothetical total</div><div class="smallnum">${money(a.v,true)}</div></div>`}).join('')}</div><p class="sub">A dip isn't the end of the story, but in real life, nothing guarantees it recovers.</p><p class="note">More money went in when contributions continued. That alone does not prove a better return. Both examples remain invested after year 1.</p>${disclaimer()}`;
+case 7:return `<div class="eyebrow">Explore, don't buy</div><h1>Different funds.<br>Different kinds of risk.</h1><p class="sub">Money like this can sit in different kinds of funds.</p>${FUNDS.map((f,i)=>`<div class="fund ${d.fund===i?'selected':''}"><button data-fund="${i}" aria-pressed="${d.fund===i}"><div class="type">${f.type} ${d.fund===i?'· Selected to learn':''}</div><h2>${f.name}</h2><p>Direct · Growth · ${f.amc}</p><p>${f.description}</p><div class="risk">${f.risk?'Riskometer: '+f.risk+'<br><span class="sub">'+f.riskDate+'; check the latest AMC label.</span>':'Check riskometer on AMC site'}</div></button><a href="${f.riskUrl||f.url}" target="_blank" rel="noopener">Official AMC ${f.risk?'document':'page'} ↗</a></div>`).join('')}<p class="note">Examples only. Not a recommendation. Selection means "I want to learn about this one", not a purchase. Check the fund's official documents before investing. The what-if rates are unrelated to these funds.</p>`;
+case 8:return `<div class="eyebrow">Nothing is bought</div><h1>Your practice plan.</h1><div class="moneylabel">Monthly amount</div><div class="num">${money(amount())}<span style="font-size:17px;letter-spacing:0"> / month</span></div><div class="summary"><div class="row"><span>Goal</span><strong class="truncate">${esc(d.emoji)} ${esc(name())}</strong></div><div class="row"><span>Fund type</span><strong>${d.fund===null?'Not chosen yet':FUNDS[d.fund].type}</strong></div><div class="row"><span>Practice schedule</span><strong>5th of every month</strong></div><div class="row"><span>Practice mode</span><strong>No real money moves</strong></div></div><p class="sub">This is a rehearsal. Nothing is bought.</p><p class="note">Only the practice goal is saved. There is no reminder or automatic debit.</p>`;
+case 9:return `<div class="success" aria-hidden="true">✓</div><div class="eyebrow">Your first practice step</div><h1>Saved. Your first goal is on your Goals tab.</h1><div class="hero"><h2 class="truncate">${esc(d.emoji)} ${esc(name())}</h2><p>${money(amount())} / month · Practice</p></div><p class="status" role="status">${storageOK?'Saved on this browser only. Not synced across devices.':'Saved for this session only. Storage is unavailable.'}</p>`;
+case 10:return `<div class="eyebrow">Your practice goal</div><h1 class="truncate">${esc(d.emoji)} ${esc(name())}</h1><p class="sub">${money(amount())} / month practice SIP</p><p class="moneylabel">Money put in</p><div class="num">₹0</div>${pile({c:0,v:0,g:0})}<p class="sub">0 months practiced. Nothing has been invested.</p><button class="primary replay" id="replay">Replay the piles</button><div class="disableditem"><button disabled title="Not available in this prototype">Start a real SIP</button><p>Not available in this prototype</p></div><p class="note">Saved ${new Date(saved?.createdAt||Date.now()).toLocaleDateString('en-IN')}. Fund interest: ${d.fund===null?'not chosen yet':esc(FUNDS[d.fund].name)}. This goal has no live balance or fund connection.</p><button class="secondary danger" id="delete">Delete practice goal</button>`;}}
+function render(){document.body.classList.toggle('dark',dark);let labels={1:'Next',2:edit?'Update practice amount':'See the two piles',3:'What if it grows?',4:'Why does time matter?',5:'What about a bad year?',6:'Where does this money go?',7:'Set up my practice plan',8:'Save practice goal',9:'View my goal'};let secondary=step===7?'<button class="secondary" id="skip">Skip, decide later</button>':step===8?'<button class="secondary" id="edit">Edit amount</button>':step===9?'<button class="secondary" id="home">Back to home</button>':'';document.getElementById('root').innerHTML=`<div class="app"><header class="top">${step>0?'<button class="icon" id="back" aria-label="Go back">←</button>':'<div class="brand">two<b>piles</b></div>'}${dots()}<button class="icon" id="theme" aria-label="Toggle dark mode">${dark?'☀':'☾'}</button></header><main class="page" id="page" data-screen="${step}">${content()}</main>${labels[step]?footer(labels[step],step===1?!goalOK():step===2?!validAmount():false,secondary):''}${step===0?`<nav class="nav" aria-label="Main navigation"><button disabled><span>↗</span>Stocks</button><button disabled><span>⌁</span>F&amp;O</button><button disabled><span>▥</span>Mutual Funds</button><button class="active" id="navgoals"><span>◎</span>Goals</button><button disabled><span>○</span>Account</button></nav>`:''}</div>${modal?`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="deleteTitle"><div class="sheet"><h2 id="deleteTitle">Delete this practice goal?</h2><p class="sub">This removes your saved practice plan from this browser.</p><button class="primary dangerBtn" id="confirmDelete">Delete practice goal</button><button class="secondary" id="cancelDelete">Keep my goal</button></div></div>`:''}`;bind();}
+function bindResults(){on('years',e=>{d.years=Math.max(1,Math.min(20,Number(e.target.value)));d.moved=true;persist();document.getElementById('yeartext').textContent=d.years+' years';let holder=document.createElement('div');holder.innerHTML=content();document.querySelector('.pile').outerHTML=holder.querySelector('.pile').outerHTML;let num=document.querySelector('.num');if(num)num.innerHTML=holder.querySelector('.num').innerHTML;},'input');document.querySelectorAll('[data-rate]').forEach(e=>e.addEventListener('click',()=>{d.rate=Number(e.dataset.rate);persist();render()}));on('fullNumber',()=>{fullNumber=!fullNumber;render()});}
+function on(id,fn,event='click'){let e=document.getElementById(id);if(e)e.addEventListener(event,fn)}
+function amountUpdate(v){d.amount=String(v);persist();render()}
+function bind(){on('back',back);on('theme',()=>{dark=!dark;render()});on('start',()=>go(1));on('savedTile',()=>{d={...fresh(),...saved};go(10)});on('goalsTab',()=>saved?go(10):document.getElementById('start')?.focus());on('navgoals',()=>saved?go(10):document.getElementById('start')?.focus());on('next',()=>{if(step===8){saved={...d,createdAt:new Date().toISOString()};store('twopiles:v1',saved);try{localStorage.removeItem('twopiles:draft:v1')}catch(e){}go(9)}else next()});document.querySelectorAll('[data-goal]').forEach(e=>e.addEventListener('click',()=>{let g=GOALS[Number(e.dataset.goal)];d.goal=g[0];d.emoji=g[1];if(!d.moved)d.years=g[2];persist();render()}));on('custom',e=>{d.custom=e.target.value;persist();document.getElementById('next').disabled=!goalOK();document.getElementById('goalError').textContent=!goalOK()?'Give it a short name (1-24 characters).':''},'input');on('amount',e=>{d.amount=e.target.value.replace(/[^\d.]/g,'');e.target.value=d.amount;persist();document.getElementById('next').disabled=!validAmount();document.getElementById('amountError').textContent=amountError();document.getElementById('minus').disabled=amount()<=500;document.getElementById('plus').disabled=amount()>=50000},'input');on('amount',()=>{if(d.amount&&Number.isFinite(amount())){d.amount=String(Math.round(amount()));persist();render()}},'blur');on('minus',()=>amountUpdate(Math.max(500,amount()-500)));on('plus',()=>amountUpdate(Math.min(50000,amount()+500)));document.querySelectorAll('[data-amount]').forEach(e=>e.addEventListener('click',()=>amountUpdate(e.dataset.amount)));document.querySelectorAll('[data-rate]').forEach(e=>e.addEventListener('click',()=>{d.rate=Number(e.dataset.rate);persist();render()}));on('years',e=>{d.years=Math.max(1,Math.min(20,Number(e.target.value)));d.moved=true;persist();document.getElementById('yeartext').textContent=d.years+' years';e.target.setAttribute('aria-valuetext',d.years+' years');let holder=document.createElement('div');holder.innerHTML=content();document.querySelector('.pile').outerHTML=holder.querySelector('.pile').outerHTML;let num=document.querySelector('.num');if(num)num.innerHTML=holder.querySelector('.num').innerHTML;},'input');on('years',()=>render(),'change');on('fullNumber',()=>{fullNumber=!fullNumber;render()});on('year1',()=>{yearOne=true;render()});on('year3',()=>{yearOne=false;render()});document.querySelectorAll('[data-fund]').forEach(e=>e.addEventListener('click',()=>{let i=Number(e.dataset.fund);d.fund=d.fund===i?null:i;persist();render()}));on('skip',()=>{d.fund=null;go(8)});on('edit',()=>{edit=true;go(2)});on('home',()=>go(0));on('replay',()=>go(3));on('delete',()=>{modal=true;render();document.getElementById('cancelDelete')?.focus()});on('cancelDelete',()=>{modal=false;render();document.getElementById('delete')?.focus()});on('confirmDelete',()=>{saved=null;d=fresh();try{localStorage.removeItem('twopiles:v1');localStorage.removeItem('twopiles:draft:v1')}catch(e){}modal=false;go(0)});if(modal)document.querySelector('.modal').addEventListener('keydown',e=>{if(e.key==='Escape'){modal=false;render()}if(e.key==='Tab'){let a=document.getElementById('confirmDelete'),b=document.getElementById('cancelDelete');if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus()}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus()}}});}
+window.TwoPiles={calc,dip,go,getState:()=>({d,step,saved,storageOK}),setState:v=>{d={...d,...v};render()}};render();
+</script></body></html>
